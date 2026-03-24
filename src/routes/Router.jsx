@@ -9,6 +9,7 @@ import Checkout from "../pages/Checkout";
 import Profile from "../pages/Profile";
 import ActivateAccount from "../pages/ActivateAccount";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Navbar from "../components/Navbar";
 import EditProduct from "../components/EditProduct";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
 // import SellerDashboard from "../pages/dashboard/SellerDashboard";
@@ -37,6 +38,7 @@ import Wishlist from "../pages/customer/Wishlist";
 import CustomerCart from "../pages/customer/Cart";
 import CustomerCheckout from "../pages/customer/Checkout";
 import CustomerNavbar from "../pages/customer/Navbar";
+import Footer from "../components/Footer";
 
 
 
@@ -47,6 +49,7 @@ function Router() {
 
         {/* PUBLIC ROUTES */}
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<Footer />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/activate/:uid/:token" element={<ActivateAccount />} />

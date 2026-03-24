@@ -25,7 +25,7 @@ function Home() {
 
       <Newsletter />
 
-      <Footer />
+      <Footer id="about-section" />
     </>
   );
 }

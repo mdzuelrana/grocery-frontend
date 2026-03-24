@@ -1,7 +1,29 @@
 
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleAboutClick = () => {
+    if (location.pathname !== "/") {
+      // Navigate to home page first
+      navigate("/", { replace: false });
+      // Scroll after small delay to let the DOM render
+      setTimeout(() => scrollToSection("about-section"), 100);
+    } else {
+      scrollToSection("about-section");
+    }
+  };
+
+  
 
   const navLinks = (
     <>
@@ -17,14 +39,9 @@ const Navbar = () => {
       </li>
 
       <li>
-        <NavLink
-          to="/cart"
-          className={({ isActive }) =>
-            isActive ? "font-semibold text-primary" : ""
-          }
-        >
-          Cart
-        </NavLink>
+          <button onClick={handleAboutClick} className="hover:text-primary font-medium">
+          About
+        </button>
       </li>
 
       <li>

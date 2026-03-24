@@ -39,6 +39,8 @@ import CustomerCart from "../pages/customer/Cart";
 import CustomerCheckout from "../pages/customer/Checkout";
 import CustomerNavbar from "../pages/customer/Navbar";
 import Footer from "../components/Footer";
+import PaymentHistory from "../pages/customer/PaymentHistory";
+
 
 
 
@@ -135,6 +137,7 @@ function Router() {
 
           {/* WISHLIST */}
           <Route path="wishlist" element={<Wishlist />} />
+          <Route path="payments" element={<PaymentHistory />} />
 
           {/* PROFILE */}
           <Route path="profile" element={<CustomerProfile />} />

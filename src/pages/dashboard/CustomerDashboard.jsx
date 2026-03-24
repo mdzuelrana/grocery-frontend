@@ -45,6 +45,16 @@ export default function CustomerDashboard() {
           Orders
         </NavLink>
       </li>
+      <li>
+        <NavLink
+          to="/customer-dashboard/payments"
+          className={({ isActive }) =>
+            isActive ? "font-semibold text-primary" : ""
+          }
+        >
+          Payment History
+        </NavLink>
+      </li>
 
       <li>
         <NavLink

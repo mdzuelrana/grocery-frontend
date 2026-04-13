@@ -40,7 +40,7 @@ import CustomerCheckout from "../pages/customer/Checkout";
 import CustomerNavbar from "../pages/customer/Navbar";
 import Footer from "../components/Footer";
 import PaymentHistory from "../pages/customer/PaymentHistory";
-
+import PaymentSuccess from "../pages/customer/PaymentSuccess";
 
 
 
@@ -59,6 +59,8 @@ function Router() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/products/edit/:id" element={<EditProduct />}/>
+
+        <Route path="payment-success" element={<PaymentSuccess />} />
 
         {/* PROTECTED PROFILE */}
         <Route
@@ -141,6 +143,7 @@ function Router() {
 
           {/* PROFILE */}
           <Route path="profile" element={<CustomerProfile />} />
+          <Route path="payment-success" element={<PaymentSuccess />} />
 
         </Route>
 

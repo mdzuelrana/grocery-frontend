@@ -19,21 +19,21 @@ const PAYMENT_BADGE = {
 function AdminDashboard() {
   const navigate = useNavigate();
 
-  const [products,  setProducts]  = useState([]);
-  const [customers, setCustomers] = useState([]);
-  const [orders,    setOrders]    = useState([]);
-  const [loading,   setLoading]   = useState(true);
+  const [stats,    setStats]    = useState(null);
+  const [products, setProducts] = useState([]);
+  const [orders,   setOrders]   = useState([]);
+  const [loading,  setLoading]  = useState(true);
 
   useEffect(() => {
     Promise.all([
-      API.get("/api/admin-products/"),   // ✅ admin endpoint — all products
-      API.get("/api/admin-orders/"),     // ✅ admin endpoint — all orders
-      API.get("/api/customers/"),        // all customers
+      API.get("/api/admin-dashboard/"),  // ✅ stats
+      API.get("/api/admin-products/"),   // ✅ all products
+      API.get("/api/admin-orders/"),     // ✅ all orders
     ])
-      .then(([productsRes, ordersRes, customersRes]) => {
+      .then(([statsRes, productsRes, ordersRes]) => {
+        setStats(statsRes.data);
         setProducts(productsRes.data);
         setOrders(ordersRes.data);
-        setCustomers(customersRes.data);
       })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
@@ -45,21 +45,12 @@ function AdminDashboard() {
       await API.delete(`/api/admin-products/${id}/`);
       setProducts(prev => prev.filter(p => p.id !== id));
     } catch (err) {
-      alert("Failed to delete product.",err);
+      alert("Failed to delete product.");
     }
   };
 
-  // ── computed stats ─────────────────────────────────────────────────────────
-  const totalRevenue = orders
-    .filter(o => o.payment_status === "paid")
-    .reduce((sum, o) => sum + parseFloat(o.total_amount), 0);
-
-  const statusCount = (status) =>
-    orders.filter(o => o.order_status === status).length;
-
-  const recentOrders   = [...orders].slice(0, 6);
-  const recentProducts = [...products].slice(0, 6);
-  const lowStock       = products.filter(p => p.stock <= 5);
+  const lowStock     = products.filter(p => p.stock <= 5);
+  const recentOrders = orders.slice(0, 6);
 
   if (loading) return (
     <div className="flex justify-center items-center h-screen">
@@ -74,13 +65,11 @@ function AdminDashboard() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <p className="text-sm text-gray-400">Welcome back — here's what's happening</p>
+          <p className="text-sm text-gray-400">Overview of your grocery store</p>
         </div>
-        <div className="flex gap-2">
-          <Link to="/admin/products" className="btn btn-sm btn-primary">
-            + Add Product
-          </Link>
-        </div>
+        <Link to="/admin/products" className="btn btn-sm btn-primary">
+          + Add Product
+        </Link>
       </div>
 
       {/* ── Stat Cards ── */}
@@ -88,19 +77,21 @@ function AdminDashboard() {
 
         <div className="card bg-primary text-primary-content shadow p-5">
           <p className="text-sm opacity-75">Total Revenue</p>
-          <p className="text-3xl font-bold mt-1">৳ {totalRevenue.toFixed(0)}</p>
+          <p className="text-3xl font-bold mt-1">
+            ৳ {parseFloat(stats.total_revenue).toFixed(0)}
+          </p>
           <p className="text-xs opacity-60 mt-1">from paid orders</p>
         </div>
 
         <div className="card bg-base-100 shadow p-5">
           <p className="text-sm text-gray-500">Total Orders</p>
-          <p className="text-3xl font-bold mt-1">{orders.length}</p>
-          <p className="text-xs text-success mt-1">{statusCount("delivered")} delivered</p>
+          <p className="text-3xl font-bold mt-1">{stats.total_orders}</p>
+          <p className="text-xs text-success mt-1">{stats.delivered} delivered</p>
         </div>
 
         <div className="card bg-base-100 shadow p-5">
           <p className="text-sm text-gray-500">Total Products</p>
-          <p className="text-3xl font-bold mt-1">{products.length}</p>
+          <p className="text-3xl font-bold mt-1">{stats.total_products}</p>
           {lowStock.length > 0 && (
             <p className="text-xs text-error mt-1">⚠ {lowStock.length} low stock</p>
           )}
@@ -108,7 +99,7 @@ function AdminDashboard() {
 
         <div className="card bg-base-100 shadow p-5">
           <p className="text-sm text-gray-500">Customers</p>
-          <p className="text-3xl font-bold mt-1">{customers.length}</p>
+          <p className="text-3xl font-bold mt-1">{stats.total_users}</p>
           <p className="text-xs text-gray-400 mt-1">registered users</p>
         </div>
 
@@ -119,11 +110,11 @@ function AdminDashboard() {
         <h2 className="font-semibold text-lg mb-4">Order Status Breakdown</h2>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {[
-            { label: "Processing", value: statusCount("processing"), color: "text-warning" },
-            { label: "Confirmed",  value: statusCount("confirmed"),  color: "text-info" },
-            { label: "Shipped",    value: statusCount("shipped"),    color: "text-primary" },
-            { label: "Delivered",  value: statusCount("delivered"),  color: "text-success" },
-            { label: "Cancelled",  value: statusCount("cancelled"),  color: "text-error" },
+            { label: "Processing", value: stats.processing, color: "text-warning" },
+            { label: "Confirmed",  value: stats.confirmed,  color: "text-info" },
+            { label: "Shipped",    value: stats.shipped,    color: "text-primary" },
+            { label: "Delivered",  value: stats.delivered,  color: "text-success" },
+            { label: "Cancelled",  value: stats.cancelled,  color: "text-error" },
           ].map(s => (
             <div key={s.label} className="text-center border rounded-xl py-4">
               <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
@@ -167,9 +158,7 @@ function AdminDashboard() {
                   <span className={`badge badge-sm ${PAYMENT_BADGE[order.payment_status] ?? "badge-ghost"}`}>
                     {order.payment_status}
                   </span>
-                  <p className="text-sm font-bold text-green-600">
-                    ৳ {order.total_amount}
-                  </p>
+                  <p className="text-sm font-bold text-green-600">৳ {order.total_amount}</p>
                 </div>
               </div>
             ))}
@@ -229,7 +218,7 @@ function AdminDashboard() {
       {/* ── Products Table ── */}
       <div className="card bg-base-100 shadow p-5">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold text-lg">Latest Products</h2>
+          <h2 className="font-semibold text-lg">All Products</h2>
           <Link to="/admin/products" className="text-sm text-primary hover:underline">
             View all →
           </Link>
@@ -246,7 +235,7 @@ function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {recentProducts.map(p => (
+              {products.slice(0, 8).map(p => (
                 <tr key={p.id}>
                   <td>
                     <div className="flex items-center gap-3">
@@ -265,8 +254,8 @@ function AdminDashboard() {
                   <td className="font-medium">৳ {p.price}</td>
                   <td>
                     <span className={`badge badge-sm ${
-                      p.stock === 0   ? "badge-error"   :
-                      p.stock <= 5    ? "badge-warning" :
+                      p.stock === 0 ? "badge-error"   :
+                      p.stock <= 5  ? "badge-warning" :
                       "badge-success"
                     }`}>
                       {p.stock === 0 ? "Out" : p.stock}

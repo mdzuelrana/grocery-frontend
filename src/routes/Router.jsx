@@ -18,6 +18,7 @@ import AdminLayout from "../pages/admin/AdminLayout";
 import AdminProducts from "../pages/admin/AdminProducts";
 import AdminCustomers from "../pages/admin/AdminCustomers";
 import AdminReviews from "../pages/admin/AdminReviews";
+import AdminEditProduct from "../pages/admin/AdminEditProduct";
 
 import SellerDashboard from "../pages/seller/SellerDashboard";
 import SellerProducts from "../pages/seller/SellerProducts";
@@ -77,6 +78,7 @@ function Router() {
           <Route path="products"  element={<AdminProducts />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="reviews"   element={<AdminReviews />} />
+          <Route path="products/edit/:id" element={<AdminEditProduct />} />
         </Route>
 
         {/* ── SELLER DASHBOARD ── */}

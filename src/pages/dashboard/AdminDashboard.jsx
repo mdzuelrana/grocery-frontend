@@ -45,7 +45,7 @@ function AdminDashboard() {
       await API.delete(`/api/admin-products/${id}/`);
       setProducts(prev => prev.filter(p => p.id !== id));
     } catch (err) {
-      alert("Failed to delete product.");
+      alert("Failed to delete product.",err);
     }
   };
 

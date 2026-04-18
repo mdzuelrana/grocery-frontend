@@ -13,6 +13,7 @@ import EditProduct from "../components/EditProduct";
 import AdminDashboard from "../pages/dashboard/AdminDashboard";
 import CustomerDashboard from "../pages/dashboard/CustomerDashboard";
 import Footer from "../components/Footer";
+import About from "../pages/About";
 
 import AdminLayout from "../pages/admin/AdminLayout";
 import AdminProducts from "../pages/admin/AdminProducts";
@@ -46,6 +47,7 @@ function Router() {
         {/* ── PUBLIC ROUTES ── */}
         <Route path="/"        element={<Home />} />
         <Route path="/about"   element={<Footer />} />
+        <Route path="/aboutt" element={<About />} />
         <Route path="/login"   element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/activate/:uid/:token" element={<ActivateAccount />} />

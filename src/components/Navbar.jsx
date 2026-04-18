@@ -12,16 +12,7 @@ const Navbar = () => {
     }
   };
 
-  const handleAboutClick = () => {
-    if (location.pathname !== "/") {
-      // Navigate to home page first
-      navigate("/", { replace: false });
-      // Scroll after small delay to let the DOM render
-      setTimeout(() => scrollToSection("about-section"), 100);
-    } else {
-      scrollToSection("about-section");
-    }
-  };
+  
 
   
 
@@ -39,9 +30,14 @@ const Navbar = () => {
       </li>
 
       <li>
-          <button onClick={handleAboutClick} className="hover:text-primary font-medium">
+        <NavLink
+          to="/aboutt"
+          className={({ isActive }) =>
+            isActive ? "font-semibold text-primary" : ""
+          }
+        >
           About
-        </button>
+        </NavLink>
       </li>
 
       <li>
